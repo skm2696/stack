@@ -1,3 +1,4 @@
+
 #pragma once
 #ifndef STACK_H
 
@@ -22,32 +23,52 @@ private:
 template <typename T>
 stack<T>::stack()
 {
-	array_ = new T[array_size_];
 	count_ = 0;
 }
 template <typename T>
 size_t stack<T>::count() const
 {
-	size_t count;
-	return count = count_;
+	return count_;
 }
 template <typename T>
 void stack<T>::push(T const &elem)
 {
-	array_size_++;
-	array_ = new T[array_size_];
-	if (count_ < array_size_)
+	if (count_ == 0)
 	{
-		count_++;
+		array_ = new T[1];
 		array_[count_] = elem;
+		array_size_ = 1;
+		count_++;
 	}
-	//else
-		//cout << "abc";
+	else if (count_==array_size_)
+	{
+		array_[count_] = elem;
+		count_++;
+	}
+
+	else if (count_ < array_size_)
+	{
+		T * stk = new T[array_size_];
+		for (size_t i = 0; i < array_size_; i++)
+				stk[i] = array_[i];
+		delete[] array_;
+		array_size_ = array_size_ * 2;
+		array_ = new T[array_size_];
+		for (size_t i = 0; i < count_; i++)
+			array_[i] = stk[i];
+		delete[] stk;
+		array_[count_] = elem;
+		count_++;
+	}
+	
+	
 }
 template <typename T>
 T stack<T>::pop()
 {
-if (count_>0)
-	return	array_[count_--];
+	if (count_ > 0)
+	{
+		return	array_[count_--];
+	}
 }
 #endif
