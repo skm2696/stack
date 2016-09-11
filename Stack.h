@@ -1,4 +1,3 @@
-
 #pragma once
 #ifndef STACK_H
 
@@ -25,6 +24,8 @@ template <typename T>
 stack<T>::stack()
 {
 	count_ = 0;
+	array_size_ = 1;
+	array_ = new T[array_size_];
 }
 template <typename T>
 size_t stack<T>::count() const
@@ -34,23 +35,26 @@ size_t stack<T>::count() const
 template <typename T>
 void stack<T>::push(T const &elem)
 {
-	if (count_ == 0)
+	/*if (count_ == 0)
 	{
 		array_ = new T[1];
 		array_[count_] = elem;
 		array_size_ = 1;
 		count_++;
-	}
-	else if (count_<=array_size_)
+		return;
+	}*/
+	if (count_<=array_size_)
 	{
 		array_[count_] = elem;
 		count_++;
+		return;
 	}
 
-	else if (count_ > array_size_)
+	if (count_ > array_size_)
 	{
-		T * stk = new T[array_size_];
-		for (size_t i = 0; i < array_size_; i++)
+		
+		T * stk = new T[array_size_*2];
+		/*for (size_t i = 0; i < array_size_; i++)
 				stk[i] = array_[i];
 		delete[] array_;
 		array_size_ = array_size_ * 2;
@@ -58,6 +62,16 @@ void stack<T>::push(T const &elem)
 		for (size_t i = 0; i < count_; i++)
 			array_[i] = stk[i];
 		delete[] stk;
+		array_[count_] = elem;
+		count_++;*/
+		//memcpy(stk, array_, array_size_*sizeof(T));
+		for (size_t i = 0; i < array_size_; i++)
+			stk[i] = array_[i];
+		delete[] array_;
+		array_size_ *= 2;
+		// T * array_ = new T[array_size_];
+		array_ = stk;
+		stk = nullptr;
 		array_[count_] = elem;
 		count_++;
 	}
