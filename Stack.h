@@ -41,9 +41,7 @@ void stack<T>::push(T const &elem)
 	{
 		array_size_ *= 2;
 		T * stk = new T[array_size_];
-		//memcpy(stk, array_, array_size_*sizeof(T));
-		for (size_t i = 0; i < array_size_; i++)
-			stk[i] = array_[i];
+		memcpy(stk, array_, array_size_*sizeof(T));
 		delete [] array_;
 
 		array_ = stk;
