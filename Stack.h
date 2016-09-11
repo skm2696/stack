@@ -15,6 +15,7 @@ public:
 	size_t count() const;
 	void push(T const &);
 	T pop();
+	~stack();
 private:
 	T * array_;
 	size_t array_size_;
@@ -66,9 +67,16 @@ void stack<T>::push(T const &elem)
 template <typename T>
 T stack<T>::pop()
 {
-	if (count_ > 0)
+	if (count_ <= 0) 
 	{
-		return	array_[count_--];
+		throw std::logic_error("Stack is empty!");
 	}
+	return array_[--count_];
+
+}
+template <typename T>
+stack<T>::~stack()
+{
+	delete[] array_;
 }
 #endif
