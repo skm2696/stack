@@ -37,29 +37,21 @@ template <typename T>
 void stack<T>::push(T const &elem)
 {
 
-	if (count_<=array_size_)
-	{
-		array_[count_] = elem;
-		count_++;
-		return;
-	}
-
 	if (count_ > array_size_)
 	{
-		
-		T * stk = new T[array_size_*2];
+		array_size_ *= 2;
+		T * stk = new T[array_size_];
 		//memcpy(stk, array_, array_size_*sizeof(T));
 		for (size_t i = 0; i < array_size_; i++)
 			stk[i] = array_[i];
-		//delete[] array_;
-		array_size_ *= 2;
+		//delete [] array_;
+
 		array_ = stk;
 		stk = nullptr;
+	}
 		array_[count_] = elem;
 		count_++;
-	}
-	
-	
+		
 }
 template <typename T>
 T stack<T>::pop()
@@ -74,6 +66,6 @@ T stack<T>::pop()
 template <typename T>
 stack<T>::~stack()
 {
-	delete[] array_;
+	delete [] array_;
 }
 #endif
