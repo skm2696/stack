@@ -41,13 +41,13 @@ void stack<T>::push(T const &elem)
 		array_size_ = 1;
 		count_++;
 	}
-	else if (count_==array_size_)
+	else if (count_<=array_size_)
 	{
 		array_[count_] = elem;
 		count_++;
 	}
 
-	else if (count_ < array_size_)
+	else if (count_ > array_size_)
 	{
 		T * stk = new T[array_size_];
 		for (size_t i = 0; i < array_size_; i++)
