@@ -37,7 +37,7 @@ template <typename T>
 void stack<T>::push(T const &elem)
 {
 
-	if (count_ == array_size_)
+	if (count_ >= array_size_)
 	{
 		array_size_ *= 2;
 		T * stk = new T[array_size_];
