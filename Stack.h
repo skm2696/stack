@@ -15,6 +15,7 @@ public:
 	void push(T const &);
 	T pop();
 	~stack();
+	stack(const stack & obj)=delete;
 private:
 	T * array_;
 	size_t array_size_;
@@ -35,14 +36,7 @@ size_t stack<T>::count() const
 template <typename T>
 void stack<T>::push(T const &elem)
 {
-	/*if (count_ == 0)
-	{
-		array_ = new T[1];
-		array_[count_] = elem;
-		array_size_ = 1;
-		count_++;
-		return;
-	}*/
+
 	if (count_<=array_size_)
 	{
 		array_[count_] = elem;
@@ -54,22 +48,11 @@ void stack<T>::push(T const &elem)
 	{
 		
 		T * stk = new T[array_size_*2];
-		/*for (size_t i = 0; i < array_size_; i++)
-				stk[i] = array_[i];
-		delete[] array_;
-		array_size_ = array_size_ * 2;
-		array_ = new T[array_size_];
-		for (size_t i = 0; i < count_; i++)
-			array_[i] = stk[i];
-		delete[] stk;
-		array_[count_] = elem;
-		count_++;*/
 		//memcpy(stk, array_, array_size_*sizeof(T));
 		for (size_t i = 0; i < array_size_; i++)
 			stk[i] = array_[i];
-		delete[] array_;
+		//delete[] array_;
 		array_size_ *= 2;
-		// T * array_ = new T[array_size_];
 		array_ = stk;
 		stk = nullptr;
 		array_[count_] = elem;
