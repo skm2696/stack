@@ -1,6 +1,5 @@
 #include "Stack.hpp"
 #ifndef STACK_CPP
-
 #define STACK_CPP
 
 //#include <stdio>
