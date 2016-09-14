@@ -1,4 +1,3 @@
-
 #pragma once
 #ifndef STACK_HPP
 #define STACK_HPP
@@ -19,6 +18,7 @@ public:
 	stack(const stack & obj);
 	stack & operator=(const stack &obj);
 	void swap(stack & obj);
+	bool operator==(stack const & rhs);
 private:
 	T * array_;
 	size_t array_size_;
