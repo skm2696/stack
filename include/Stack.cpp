@@ -1,5 +1,7 @@
+
 #include "Stack.hpp"
 #ifndef STACK_CPP
+
 #define STACK_CPP
 
 //#include <stdio>
@@ -72,6 +74,21 @@ void stack<T>::swap(stack & obj)
 	std::swap(obj.array_size_, array_size_);
 	std::swap(obj.array_, array_);
 	std::swap(obj.count_, count_);
+}
+template<typename T>
+bool stack<T>::operator==(stack const & rhs) 
+{
+	if ((rhs.count_ != count_) || (rhs.array_size_ != array_size_)) {
+		return false;
+	}
+	else {
+		for (size_t i = 0; i < count_; i++) {
+			if (rhs.array_[i] != array_[i]) {
+				return false;
+			}
+		}
+	}
+	return true;
 }
 
 #endif
