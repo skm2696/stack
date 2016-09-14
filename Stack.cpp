@@ -1,30 +1,9 @@
+#include "Stack.hpp"
+#ifndef STACK_CPP
 
-#pragma once
-#ifndef STACK_H
+#define STACK_CPP
 
-#define STACK_H
-#include <cstdlib>
-#include <iostream>
-#include <memory>
-using namespace std;
-
-template <typename T>
-class stack
-{
-public:
-	stack();
-	size_t count() const;
-	void push(T const &);
-	T pop();
-	~stack();
-	stack(const stack & obj);
-	stack & operator=(const stack &obj);
-	void swap(stack & obj);
-private:
-	T * array_;
-	size_t array_size_;
-	size_t count_;
-};
+//#include <stdio>
 template <typename T>
 stack<T>::stack()
 {
@@ -47,19 +26,19 @@ void stack<T>::push(T const &elem)
 		T * stk = new T[array_size_];
 		for (size_t i = 0; i < count_; i++)
 			stk[i] = array_[i];
-		delete [] array_;
+		delete[] array_;
 
 		array_ = stk;
 		stk = nullptr;
 	}
-		array_[count_] = elem;
-		count_++;
-		
+	array_[count_] = elem;
+	count_++;
+
 }
 template <typename T>
 T stack<T>::pop()
 {
-	if (count_ <= 0) 
+	if (count_ <= 0)
 	{
 		throw std::logic_error("Stack is empty!");
 	}
@@ -69,7 +48,7 @@ T stack<T>::pop()
 template <typename T>
 stack<T>::~stack()
 {
-	delete [] array_;
+	delete[] array_;
 }
 template <typename T>
 stack<T>::stack(const stack & obj) : array_size_(obj.array_size_), count_(obj.count_)
@@ -85,12 +64,12 @@ stack<T>& stack<T>::operator=(const stack &obj)
 	{
 		(stack(obj)).swap(*this);
 	}
-	
+
 	return *this;
 }
 template<typename T>
- void stack<T>::swap(stack & obj) 
- {
+void stack<T>::swap(stack & obj)
+{
 	std::swap(obj.array_size_, array_size_);
 	std::swap(obj.array_, array_);
 	std::swap(obj.count_, count_);
