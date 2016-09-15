@@ -1,5 +1,11 @@
 #include "Stack.hpp"
 #include <catch.hpp>
+SCENARIO("Stack: init", "[init]") {
+	stack<int> a;
+	// object is created and memory allocated for it
+	REQUIRE(sizeof(a) != 0);
+	REQUIRE(a.count() == 0);
+}
 SCENARIO("Stack: operator==", "[op==]") {
 	stack<int> a, b;
 	a.push(5);
