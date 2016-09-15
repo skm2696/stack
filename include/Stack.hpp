@@ -17,9 +17,7 @@ public:
 	~stack();
 	stack(const stack & obj);
 	stack & operator=(const stack &obj);
-	//void swap(stack & obj);
 	bool operator==(stack const & rhs);
-	//friend ostream & operator<< <>(ostream & output, stack<T> const & stack);
 private:
 	T * array_;
 	size_t array_size_;
