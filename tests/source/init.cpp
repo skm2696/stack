@@ -2,7 +2,6 @@
 #include <catch.hpp>
 SCENARIO("Stack: init", "[init]") {
 	stack<int> a;
-	// object is created and memory allocated for it
 	REQUIRE(sizeof(a) != 0);
 	REQUIRE(a.count() == 0);
 }
