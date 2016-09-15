@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "Stack.hpp"
 #ifndef STACK_CPP
 
