@@ -1,4 +1,4 @@
-#include "stack.hpp"
+#include "Stack.hpp"
 #include <catch.hpp>
 SCENARIO("Stack: operator=", "[op=]") {
 	stack<size_t> a;
