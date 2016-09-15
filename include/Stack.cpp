@@ -1,4 +1,4 @@
-
+#include "stdafx.h"
 #include "Stack.hpp"
 #ifndef STACK_CPP
 
@@ -59,21 +59,18 @@ stack<T>::stack(const stack & obj) : array_size_(obj.array_size_), count_(obj.co
 		array_[i] = obj.array_[i];
 }
 template <typename T>
-stack<T>& stack<T>::operator=(const stack &obj)
+stack<T>& stack<T>::operator=(const stack &obj) 
 {
+	array_size_ = obj.array_size_;
+	count_ = obj.count_;
+	array_ = new T[array_size_];
 	if (this != &obj)
 	{
-		(stack(obj)).swap(*this);
+		for (size_t i = 0; i < count_; i++)
+			array_[i] = obj.array_[i];
 	}
 
 	return *this;
-}
-template<typename T>
-void stack<T>::swap(stack & obj)
-{
-	std::swap(obj.array_size_, array_size_);
-	std::swap(obj.array_, array_);
-	std::swap(obj.count_, count_);
 }
 template<typename T>
 bool stack<T>::operator==(stack const & rhs) 
@@ -90,5 +87,4 @@ bool stack<T>::operator==(stack const & rhs)
 	}
 	return true;
 }
-
 #endif
