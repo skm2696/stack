@@ -7,6 +7,7 @@ SCENARIO("Stack: operator==", "[op==]") {
 	a.push(5);
 	b.push(5);
 	b.push(3);
+	b.push(5);
 	REQUIRE(a == b);
 }
 SCENARIO("Stack: operator=", "[op=]") {
