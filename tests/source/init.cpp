@@ -1,9 +1,18 @@
 #include "Stack.hpp"
 #include <catch.hpp>
+SCENARIO("Stack: operator==", "[op==]") {
+	stack<int> a, b;
+	a.push(5);
+	a.push(3);
+	a.push(5);
+	b.push(5);
+	b.push(3);
+	REQUIRE(a == b);
+}
 SCENARIO("Stack: operator=", "[op=]") {
-	stack<size_t> a;
+	stack<int> a;
 	a.push(1);
-	stack<size_t> b;
+	stack<int> b;
 	b = a;
 	REQUIRE(b == a);
 }
