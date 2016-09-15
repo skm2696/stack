@@ -17,3 +17,11 @@ SCENARIO("Stack: operator=", "[op=]") {
 	b = a;
 	REQUIRE(b == a);
 }
+SCENARIO("Stack: operator=", "[op=]") {
+	stack<int> a;
+	a.push(7);
+	a.push(6);
+	a.push(8);
+	a.push(9);
+	REQUIRE(a.count() == 9);
+}
