@@ -25,3 +25,12 @@ SCENARIO("Stack: count", "[op=]") {
 	a.push(9);
 	REQUIRE(a.count() == 4);
 }
+SCENARIO("Stack: pop", "[op=]") {
+	stack<int> a;
+	a.push(7);
+	a.push(6);
+	a.push(8);
+	a.push(9);
+	a.pop();
+	REQUIRE(a.count() == 3);
+}
