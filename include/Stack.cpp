@@ -55,13 +55,13 @@ stack<T>::stack(const stack & obj) : array_size_(obj.array_size_), count_(obj.co
 template <typename T>
 stack<T>& stack<T>::operator=(const stack &obj) 
 {
-	array_size_ = obj.array_size_;
-	count_ = obj.count_;
-	array_ = new T[array_size_];
+	
 	if (this != &obj)
 	{
-		for (size_t i = 0; i < count_; i++)
-			array_[i] = obj.array_[i];
+		delete[] array_;
+	array_size_ = obj.array_size_;
+	count_ = obj.count_;
+	array_ = copy_with_new(obj.array_, count_, array_size_);
 	}
 
 	return *this;
