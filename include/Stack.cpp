@@ -61,11 +61,9 @@ stack<T>::~stack()
 {
 	delete[] array_;
 }
-template <typename T>
-stack<T>::stack(const stack & obj) : array_size_(obj.array_size_), count_(obj.count_)
-{
-	array_ = copy_with_new(obj, count_, array_size_);
-}
+
+template <typename T>//конструктор копирования
+stack<T>::stack(const stack&tmp) :count_(tmp.count_), array_size_(tmp.array_size_), array_(copy(tmp.count_, tmp.array_size, tmp.array_)) {};
 template <typename T>
 stack<T>& stack<T>::operator=(const stack &obj) 
 {
