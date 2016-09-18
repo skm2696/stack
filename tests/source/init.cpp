@@ -22,7 +22,7 @@ SCENARIO("Stack: operator=", "[op=]") {
 	b = a;
 	REQUIRE(b == a);
 }
-SCENARIO("Stack: count", "[op=]") {
+SCENARIO("Stack: count", "[count]") {
 	stack<int> a;
 	a.push(7);
 	a.push(6);
@@ -30,7 +30,7 @@ SCENARIO("Stack: count", "[op=]") {
 	a.push(9);
 	REQUIRE(a.count() == 4);
 }
-SCENARIO("Stack: pop", "[op=]") {
+SCENARIO("Stack: pop", "[pop]") {
 	stack<int> a;
 	a.push(7);
 	a.push(6);
@@ -38,4 +38,14 @@ SCENARIO("Stack: pop", "[op=]") {
 	a.push(9);
 	a.pop();
 	REQUIRE(a.count() == 3);
+}
+SCENARIO("Stack: copy", "[copy]")
+{
+	stack<int> a;
+	a.push(7);
+	a.push(6);
+	a.push(8);
+	a.push(9);
+	stack<int> b = a;
+	REQUIRE(b == a);
 }
