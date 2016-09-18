@@ -63,7 +63,7 @@ stack<T>::~stack()
 }
 
 template <typename T>//конструктор копирования
-stack<T>::stack(const stack&tmp) :count_(tmp.count_), array_size_(tmp.array_size_), array_(copy(tmp.count_, tmp.array_size, tmp.array_)) {};
+stack<T>::stack(const stack&tmp) :count_(tmp.count_), array_size_(tmp.array_size_), array_(copy(tmp.count_, tmp.array_size_, tmp.array_)) {};
 template <typename T>
 stack<T>& stack<T>::operator=(const stack &obj) 
 {
