@@ -82,15 +82,7 @@ bool stack<T>::operator==(stack const & rhs)
 	}
 	return true;
 }
-template<typename T>
-ostream& operator<< <>(ostream & output, stack<T> const & stack)
-{
-	for (size_t i = 0; i < stack.count_; ++i) {
-				output << stack.array_[i] << " ";
-			}
-			output << endl;
-			return output;
-}
+
 template <typename T>
 T* stack<T>::copy_with_new(const T * arr, size_t count, size_t array_size)
 {
