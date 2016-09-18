@@ -4,7 +4,6 @@
 
 #define STACK_CPP
 
-//#include <stdio>
 template <typename T>
 stack<T>::stack()
 {
@@ -24,11 +23,8 @@ void stack<T>::push(T const &elem)
 	if (count_ == array_size_)
 	{
 		array_size_ *= 2;
-		T * stk = new T[array_size_];
-		for (size_t i = 0; i < count_; i++)
-			stk[i] = array_[i];
+		T * stk = copy_with_new(array_, count_, array_size_);
 		delete[] array_;
-
 		array_ = stk;
 		stk = nullptr;
 	}
@@ -54,9 +50,7 @@ stack<T>::~stack()
 template <typename T>
 stack<T>::stack(const stack & obj) : array_size_(obj.array_size_), count_(obj.count_)
 {
-	array_ = new T[array_size_];
-	for (size_t i = 0; i < count_; i++)
-		array_[i] = obj.array_[i];
+	array_ = copy_with_new(obj, count_, array_size_);
 }
 template <typename T>
 stack<T>& stack<T>::operator=(const stack &obj) 
@@ -72,6 +66,7 @@ stack<T>& stack<T>::operator=(const stack &obj)
 
 	return *this;
 }
+
 template<typename T>
 bool stack<T>::operator==(stack const & rhs) 
 {
@@ -86,5 +81,21 @@ bool stack<T>::operator==(stack const & rhs)
 		}
 	}
 	return true;
+}
+template<typename T>
+ostream& operator<< <>(ostream & output, stack<T> const & stack)
+{
+	for (size_t i = 0; i < stack.count_; ++i) {
+				output << stack.array_[i] << " ";
+			}
+			output << endl;
+			return output;
+}
+template <typename T>
+T* stack<T>::copy_with_new(const T * arr, size_t count, size_t array_size)
+{
+	T * stk = new T[array_size];
+	std::copy(arr, arr + count, stk);
+	return stk;
 }
 #endif
