@@ -16,7 +16,7 @@ public:
 	void pop();
 	const T& top();
 	~stack();
-	stack(const stack & obj);
+	stack(const stack & tmp);
 	stack & operator=(const stack &obj);
 	bool operator==(stack const & rhs);
 private:
