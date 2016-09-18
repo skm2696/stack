@@ -32,7 +32,7 @@ void stack<T>::push(T const &elem)
 	count_++;
 
 }
-template <typename T>
+/*template <typename T>
 T stack<T>::pop()
 {
 	if (count_ <= 0)
@@ -41,6 +41,20 @@ T stack<T>::pop()
 	}
 	return array_[--count_];
 
+}*/
+template <typename T>
+void stack<T>::pop()
+{
+	if (count_ == 0)
+	{
+		throw std::logic_error("Stack is empty!");
+	}
+	 --count_;
+}
+template <typename T>
+const T& stack<T>::top()
+{
+	return array_[count_];
 }
 template <typename T>
 stack<T>::~stack()
