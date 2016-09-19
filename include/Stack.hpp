@@ -20,9 +20,9 @@ public:
 	stack & operator=(const stack &obj);
 	bool operator==(stack const & rhs);
 private:
-	T * array_;
 	size_t array_size_;
 	size_t count_;
+	T * array_;
 };
 #include "Stack.cpp"
 #endif
