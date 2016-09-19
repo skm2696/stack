@@ -6,7 +6,7 @@
 #include <memory>
 using namespace std;
 template <typename T>
-T* copy_with_new(const T * arr, size_t count, size_t array_size)
+T* copy_with_new(const T * arr, size_t count, size_t array_size);
 template <typename T>
 class stack
 {
