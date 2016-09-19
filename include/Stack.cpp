@@ -11,11 +11,8 @@ T* stack<T>::copy_with_new(const T * arr, size_t count, size_t array_size)
 	return stk;
 };
 template <typename T>
-stack<T>::stack()
+stack<T>::stack(): array_size_(1), count_(0), array_(new T[array_size_])
 {
-	count_ = 0;
-	array_size_ = 1;
-	array_ = new T[array_size_];
 }
 template <typename T>
 size_t stack<T>::count() const
