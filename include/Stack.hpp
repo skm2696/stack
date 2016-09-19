@@ -20,7 +20,6 @@ public:
 	stack & operator=(const stack &obj);
 	bool operator==(stack const & rhs);
 private:
-	T* copy_with_new(const T * arr, size_t count, size_t array_size);
 	T * array_;
 	size_t array_size_;
 	size_t count_;
