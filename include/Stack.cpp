@@ -3,7 +3,13 @@
 #ifndef STACK_CPP
 
 #define STACK_CPP
-
+template <typename T>
+T* stack<T>::copy_with_new(const T * arr, size_t count, size_t array_size)
+{
+	T * stk = new T[array_size];
+	std::copy(arr, arr + count, stk);
+	return stk;
+};
 template <typename T>
 stack<T>::stack()
 {
@@ -95,11 +101,5 @@ bool stack<T>::operator==(stack const & rhs)
 	return true;
 }
 
-template <typename T>
-T* stack<T>::copy_with_new(const T * arr, size_t count, size_t array_size)
-{
-	T * stk = new T[array_size];
-	std::copy(arr, arr + count, stk);
-	return stk;
-}
+
 #endif
