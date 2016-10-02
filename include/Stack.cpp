@@ -5,15 +5,23 @@ template <typename T>
 T* copy_with_new(const T * arr, size_t count, size_t array_size)
 {
 	T * stk = new T[array_size];
-	std::copy(arr, arr + count, stk);
+	try
+	{
+		std::copy(arr, arr + count, stk);
+	}
+	catch (...)
+	{
+		delete[] stk;
+		throw;
+	}
 	return stk;
 };
 template <typename T>
-stack<T>::stack(): array_size_(1), count_(0), array_(new T[array_size_])
+stack<T>::stack() : array_size_(1), count_(0), array_(new T[array_size_])
 {
 }
 template <typename T>
-size_t stack<T>::count() const
+size_t stack<T>::count() const noexcept
 {
 	return count_;
 }
@@ -30,7 +38,7 @@ void stack<T>::push(T const &elem)
 		stk = nullptr;
 	}
 	array_[count_] = elem;
-	count_++;
+	++count_;
 
 }
 template <typename T>
@@ -40,12 +48,16 @@ void stack<T>::pop()
 	{
 		throw std::logic_error("Stack is empty!");
 	}
-	 --count_;
+	--count_;
 }
 template <typename T>
 const T& stack<T>::top()
 {
-	return array_[count_-1];
+	if (count_ == 0)
+	{
+		throw std::logic_error("Stack is empty!");
+	}
+	return array_[count_ - 1];
 }
 template <typename T>
 stack<T>::~stack()
@@ -54,24 +66,24 @@ stack<T>::~stack()
 }
 
 template <typename T>//конструктор копирования
-stack<T>::stack(const stack&tmp) :count_(tmp.count_), array_size_(tmp.array_size_), array_(copy_with_new(tmp.array_, tmp.count_, tmp.array_size_ )) {};
+stack<T>::stack(const stack&tmp) :count_(tmp.count_), array_size_(tmp.array_size_), array_(copy_with_new(tmp.array_, tmp.count_, tmp.array_size_)) {};
 template <typename T>
-stack<T>& stack<T>::operator=(const stack &obj) 
+stack<T>& stack<T>::operator=(const stack &obj)
 {
-	
+
 	if (this != &obj)
 	{
 		delete[] array_;
-	array_size_ = obj.array_size_;
-	count_ = obj.count_;
-	array_ = copy_with_new(obj.array_, count_, array_size_);
+		array_size_ = obj.array_size_;
+		count_ = obj.count_;
+		array_ = copy_with_new(obj.array_, count_, array_size_);
 	}
 
 	return *this;
 }
 
 template<typename T>
-bool stack<T>::operator==(stack const & rhs) 
+bool stack<T>::operator==(stack const & rhs)
 {
 	if ((rhs.count_ != count_) || (rhs.array_size_ != array_size_)) {
 		return false;
