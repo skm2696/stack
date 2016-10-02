@@ -11,7 +11,7 @@ class stack
 public:
 	stack();/*noexcept*/
 	size_t count() const noexcept;/*noexcept*/
-	void push(T const &);/*strong*/
+	void push(T const &);	/*basic*/
 	void pop();/*strong*/
 	const T& top();/*strong*/
 	~stack();/*noexcept*/
