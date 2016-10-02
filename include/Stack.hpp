@@ -18,6 +18,7 @@ public:
 	stack(const stack & tmp);/*strong*/
 	stack & operator=(const stack &obj);/*strong*/
 	bool operator==(stack const & rhs);/*noexcept*/
+	bool empty() const noexcept;/*noexcept*/
 private:
 	size_t array_size_;
 	size_t count_;
