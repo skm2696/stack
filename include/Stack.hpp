@@ -10,7 +10,7 @@ class stack
 {
 public:
 	stack();/*noexcept*/
-	size_t count() const noexept;/*noexcept*/
+	size_t count() const noexcept;/*noexcept*/
 	void push(T const &);/*strong*/
 	void pop();/*strong*/
 	const T& top();/*strong*/
