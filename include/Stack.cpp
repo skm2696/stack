@@ -35,7 +35,7 @@ void stack<T>::push(T const &elem)
 		T * stk = copy_with_new(array_, count_, array_size_);
 		delete[] array_;
 		array_ = stk;
-		stk = nullptr;
+	
 	}
 	array_[count_] = elem;
 	++count_;
