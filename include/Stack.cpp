@@ -31,10 +31,11 @@ void stack<T>::push(T const &elem)
 
 	if (count_ == array_size_)
 	{
-		array_size_ *= 2;
-		T * stk = copy_with_new(array_, count_, array_size_);
+		array_size = array_size_*2;
+		T * stk = copy_with_new(array_, count_, array_size);
 		delete[] array_;
 		array_ = stk;
+		array_size_=array_size;
 	
 	}
 	array_[count_] = elem;
