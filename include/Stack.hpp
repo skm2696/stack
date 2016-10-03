@@ -12,8 +12,8 @@ public:
 	stack();/*noexcept*/
 	size_t count() const noexcept;/*noexcept*/
 	void push(T const &);/*strong*/
-	//void pop();/*strong*/
-	const T& pop();/*basic*/
+	void pop();/*strong*/
+	const T& top();/*strong*/
 	~stack();/*noexcept*/
 	stack(const stack & tmp);/*strong*/
 	stack & operator=(const stack &obj);/*strong*/
