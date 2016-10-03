@@ -12,13 +12,14 @@ public:
 	stack();/*noexcept*/
 	size_t count() const noexcept;/*noexcept*/
 	void push(T const &);/*strong*/
-	void pop();/*strong*/
-	const T& top();/*strong*/
+	//void pop();/*strong*/
+	const T& pop();/*basic*/
 	~stack();/*noexcept*/
 	stack(const stack & tmp);/*strong*/
 	stack & operator=(const stack &obj);/*strong*/
 	bool operator==(stack const & rhs);/*noexcept*/
 	bool empty() const noexcept;/*noexcept*/
+	void swap(stack &tmp);
 private:
 	size_t array_size_;
 	size_t count_;
