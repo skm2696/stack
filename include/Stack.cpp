@@ -42,7 +42,7 @@ void stack<T>::push(T const &elem)
 	++count_;
 
 }
-template <typename T>
+/*template <typename T>
 void stack<T>::pop()
 {
 	if (count_ == 0)
@@ -50,15 +50,15 @@ void stack<T>::pop()
 		throw std::logic_error("Stack is empty!");
 	}
 	--count_;
-}
+}*/
 template <typename T>
-const T& stack<T>::top()
+const T& stack<T>::pop()
 {
 	if (count_ == 0)
 	{
 		throw std::logic_error("Stack is empty!");
 	}
-	return array_[count_ - 1];
+	return array_[--count_];
 }
 template <typename T>
 stack<T>::~stack()
@@ -74,11 +74,9 @@ stack<T>& stack<T>::operator=(const stack &obj)
 
 	if (this != &obj)
 	{
-		delete[] array_;
-		array_size_ = obj.array_size_;
-		count_ = obj.count_;
-		array_ = copy_with_new(obj.array_, count_, array_size_);
+	  (stack(obj)).swap(*this);
 	}
+	
 
 	return *this;
 }
@@ -102,6 +100,13 @@ template<typename T>
 bool stack<T>::empty() const noexcept  
 {
 	return (count_ == 0);
+}
+template<typename T>
+void stack<T>::swap(stack &tmp)
+{
+	std::swap(tmp.array_size_,array_size_);
+	std::swap(tmp.count_,count_);
+	std::swap(tmp.array_,array_);
 }
 
 
