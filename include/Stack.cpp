@@ -1,6 +1,30 @@
 #include "Stack.hpp"
+#include <stdexcept>
 #ifndef STACK_CPP
 #define STACK_CPP
+template <typename T1, typename T2>
+void construct(T1 * ptr, T2 const & value)
+{
+	new(ptr) T1(value);
+}
+
+template <typename T>
+void destroy(T * array) noexcept
+{
+	array->~T();
+}
+
+template <typename FwdIter>
+void destroy(FwdIter first, FwdIter last) noexcept
+{
+	for (; first != last; ++first) 
+	{
+		destroy(&*first);
+	}
+}
+
+
+
 template <typename T>
 T* copy_with_new(const T * arr, size_t count, size_t array_size)
 {
@@ -16,9 +40,26 @@ T* copy_with_new(const T * arr, size_t count, size_t array_size)
 	}
 	return stk;
 };
-template <typename T>
-stack<T>::stack() : array_size_(1), count_(0), array_(new T[array_size_])
+template <typename T>// конструктор аллокатора
+allocator<T>::allocator(size_t size) : array_(static_cast<T *>(size == 0 ? nullptr : operator new(size * sizeof(T)))), array_size_(0), count_(size) {
+};
+template <typename T>//деструктор аллокатора
+allocator<T>::~allocator() 
 {
+	operator delete(array_);
+};
+template <typename T>//swap allocator
+void allocator<T>::swap(allocator& stk)
+{
+	std::swap(array_, stk.array_);
+	std::swap(array_size_, stk.array_size_);
+	std::swap(count_, stk.count_);
+};
+
+template <typename T>
+stack<T>::stack()  
+{
+	destroy(array_);
 }
 template <typename T>
 size_t stack<T>::count() const noexcept
@@ -29,16 +70,15 @@ template <typename T>
 void stack<T>::push(T const &elem)
 {
 
-	if (count_ == array_size_)
+	if (allocator<T>::count_ == allocator<T>::array_size_)
 	{
-		size_t array_size = array_size_*2;
+		size_t array_size = allocator<T>::array_size_*2+(allocator<T>::array_size_==0);
 		T * stk = copy_with_new(array_, count_, array_size);
 		delete[] array_;
-		array_ = stk;
-		array_size_=array_size;
-	
+		allocator<T>::array_ = stk;
+		allocator<T>::array_size_ = array_size;
 	}
-	array_[count_] = elem;
+	construct(array_ + count_, elem);
 	++count_;
 
 }
@@ -49,6 +89,7 @@ void stack<T>::pop()
 	{
 		throw std::logic_error("Stack is empty!");
 	}
+	destroy(array_ + count_);
 	--count_;
 }
 template <typename T>
@@ -58,25 +99,31 @@ const T& stack<T>::top()
 	{
 		throw std::logic_error("Stack is empty!");
 	}
-	return array_[count_-1];
+	return array_[count_ - 1];
 }
 template <typename T>
 stack<T>::~stack()
-{
-	delete[] array_;
-}
+{}
 
-template <typename T>//конструктор копирования
-stack<T>::stack(const stack&tmp) :count_(tmp.count_), array_size_(tmp.array_size_), array_(copy_with_new(tmp.array_, tmp.count_, tmp.array_size_)) {};
+template <typename T>
+stack<T>::stack(const stack&tmp) 
+{
+	count_ = tmp.count_;
+	array_size_ = tmp.array_size_;
+	array_=copy_with_new(tmp.array_, tmp.count_, tmp.array_size_) 
+}
 template <typename T>
 stack<T>& stack<T>::operator=(const stack &obj)
 {
 
 	if (this != &obj)
 	{
-	  (stack(obj)).swap(*this);
+		T* stk = copy_with_new(obj.array_, count_, array_size_);
+		delete[] array_;
+		array_size_ = obj.array_size_;
+		count_ = obj.count_;
+		array_ = stk;
 	}
-	
 
 	return *this;
 }
@@ -96,18 +143,5 @@ bool stack<T>::operator==(stack const & rhs)
 	}
 	return true;
 }
-template<typename T> 
-bool stack<T>::empty() const noexcept  
-{
-	return (count_ == 0);
-}
-template<typename T>
-void stack<T>::swap(stack &tmp)
-{
-	std::swap(tmp.array_size_,array_size_);
-	std::swap(tmp.count_,count_);
-	std::swap(tmp.array_,array_);
-}
-
 
 #endif
