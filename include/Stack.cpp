@@ -110,7 +110,7 @@ stack<T>::stack(const stack&tmp)
 {
 	allocator<T>::count_ = tmp.count_;
 	allocator<T>::array_size_ = tmp.array_size_;
-	allocator<T>::array_=copy_with_new(tmp.array_, tmp.count_, tmp.array_size_) 
+	allocator<T>::array_=copy_with_new(tmp.array_, tmp.count_, tmp.array_size_); 
 }
 template <typename T>
 stack<T>& stack<T>::operator=(const stack &obj)
@@ -118,8 +118,8 @@ stack<T>& stack<T>::operator=(const stack &obj)
 
 	if (this != &obj)
 	{
-		T* stk = copy_with_new(obj.array_, allocator<T>::count_, array_size_);
-		delete[] array_;
+		T* stk = copy_with_new(obj.array_, allocator<T>::count_, allocator<T>::array_size_);
+		delete[] allocator<T>::array_;
 		allocator<T>::array_size_ = obj.array_size_;
 		allocator<T>::count_ = obj.count_;
 		allocator<T>::array_ = stk;
@@ -136,7 +136,7 @@ bool stack<T>::operator==(stack const & rhs)
 	}
 	else {
 		for (size_t i = 0; i < allocator<T>::count_; i++) {
-			if (rhs.array_[i] != array_[i]) {
+			if (rhs.array_[i] != allocator<T>::array_[i]) {
 				return false;
 			}
 		}
