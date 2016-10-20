@@ -29,7 +29,6 @@ public:
 	const T& top();
 	stack & operator=(const stack &obj);
 	bool operator==(stack const & rhs);
-	//friend ostream & operator<< <>(ostream & output, stack<T> const & stack);
 	
 };
 #include "Stack.cpp"
