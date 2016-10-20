@@ -118,11 +118,11 @@ stack<T>& stack<T>::operator=(const stack &obj)
 
 	if (this != &obj)
 	{
-		T* stk = copy_with_new(obj.array_, allocator<T>::count_, allocator<T>::array_size_);
+		T* stk = copy_with_new(obj.array_, obj.count_, obj.array_size_);
 		delete[] allocator<T>::array_;
+		allocator<T>::array_ = stk;
 		allocator<T>::array_size_ = obj.array_size_;
 		allocator<T>::count_ = obj.count_;
-		allocator<T>::array_ = stk;
 	}
 
 	return *this;
