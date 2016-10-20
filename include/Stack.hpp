@@ -2,28 +2,35 @@
 #ifndef STACK_HPP
 #define STACK_HPP
 #include <iostream>
-using namespace std;
-template <typename T>
-T* copy_with_new(const T * arr, size_t count, size_t array_size);
-template <typename T>
-class stack
+template<typename T>
+class allocator
 {
-public:
-	stack();/*noexcept*/
-	size_t count() const noexcept;/*noexcept*/
-	void push(T const &);/*strong*/
-	void pop();/*strong*/
-	const T& top();/*strong*/
-	~stack();/*noexcept*/
-	stack(const stack & tmp);/*strong*/
-	stack & operator=(const stack &obj);/*strong*/
-	bool operator==(stack const & rhs);/*noexcept*/
-	bool empty() const noexcept;/*noexcept*/
-	void swap(stack &tmp);
-private:
+protected:
+	allocator(size_t size = 0);
+	~allocator();
+	void swap(allocator& stk);
+	allocator(allocator const&) = delete;
+	allocator& operator=(allocator const&) = delete;
+
+	T * array_;
 	size_t array_size_;
 	size_t count_;
-	T * array_;
+};
+template <typename T>
+class stack : private allocator<T>
+{
+public:
+	stack();
+	~stack();
+	stack(const stack & obj);
+	size_t count() const noexcept;
+	void push(T const &);
+	void pop();
+	const T& top();
+	stack & operator=(const stack &obj);
+	bool operator==(stack const & rhs);
+	//friend ostream & operator<< <>(ostream & output, stack<T> const & stack);
+	
 };
 #include "Stack.cpp"
 #endif
