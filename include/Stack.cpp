@@ -40,15 +40,15 @@ T* copy_with_new(const T * arr, size_t count, size_t array_size)
 	}
 	return stk;
 };
-template <typename T>// конструктор аллокатора
+template <typename T>
 allocator<T>::allocator(size_t size) : array_(static_cast<T *>(size == 0 ? nullptr : operator new(size * sizeof(T)))), array_size_(0), count_(size) {
 };
-template <typename T>//деструктор аллокатора
+template <typename T>
 allocator<T>::~allocator() 
 {
 	operator delete(array_);
 };
-template <typename T>//swap allocator
+template <typename T>
 void allocator<T>::swap(allocator& stk)
 {
 	std::swap(array_, stk.array_);
