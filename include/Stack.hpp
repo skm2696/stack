@@ -20,7 +20,7 @@ template <typename T>
 class stack : private allocator<T>
 {
 public:
-	stack();
+	stack(size_t size=0);
 	~stack();
 	stack(const stack & obj);
 	size_t count() const noexcept;
