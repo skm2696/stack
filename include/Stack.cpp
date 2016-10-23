@@ -81,9 +81,8 @@ size_t stack<T>::count() const noexcept
 	return allocator<T>::count_;
 }
 template <typename T>
-stack<T>::stack(size_t size = 0)  
+stack<T>::stack(size_t size = 0)  : allocator<T>(size)
 {
-	destroy(allocator<T>::array_);
 }
 template <typename T>
 void stack<T>::pop()
