@@ -29,7 +29,7 @@ public:
 	const T& top();
 	stack & operator=(const stack &obj);
 	bool operator==(stack const & rhs);
-	bool empty() noexcept;
+	bool empty() const noexcept;
 
 };
 #include "Stack.cpp"
