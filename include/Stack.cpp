@@ -68,7 +68,7 @@ void stack<T>::push(T const &elem)
 	{
 		size_t array_size = allocator<T>::array_size_*2+(allocator<T>::array_size_==0);
 		stack<T> temp(array_size);
-		while (temp.count() < allocator<T>::count_) temp.push(allocator<T>::ptr_[temp.count()]); 
+		while (temp.count() < allocator<T>::count_) temp.push(allocator<T>::array_[temp.count()]); 
 		this->swap(temp);
 	}
 	construct(allocator<T>::array_ + allocator<T>::count_, elem);
@@ -81,7 +81,7 @@ size_t stack<T>::count() const noexcept
 	return allocator<T>::count_;
 }
 template <typename T>
-stack<T>::stack()  
+stack<T>::stack(size_t size = 0)  
 {
 	destroy(allocator<T>::array_);
 }
