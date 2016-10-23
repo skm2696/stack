@@ -127,6 +127,11 @@ stack<T>& stack<T>::operator=(const stack &obj)
 
 	return *this;
 }
+template<typename T> 
+bool stack<T>::empty() noexcept 
+{
+	return (allocator<T>::count_ == 0);
+}
 
 template<typename T>
 bool stack<T>::operator==(stack const & rhs)
