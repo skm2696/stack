@@ -25,11 +25,11 @@ public:
 	stack(const stack & obj);
 	size_t count() const noexcept;
 	void push(T const &);
-	void pop();
+	size_t pop();
 	const T& top();
 	stack & operator=(const stack &obj);
 	bool operator==(stack const & rhs);
-	bool empty() noexcept;
+	bool empty() const noexcept;
 
 };
 #include "Stack.cpp"
