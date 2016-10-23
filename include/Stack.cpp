@@ -57,9 +57,9 @@ void allocator<T>::swap(allocator& stk)
 };
 template <typename T>
 stack<T>::~stack()
-{}
-
-
+{
+	destroy(allocator<T>::ptr_, allocator<T>::ptr_ + allocator<T>::count_);
+}
 template <typename T>
 void stack<T>::push(T const &elem)
 {
@@ -85,14 +85,14 @@ stack<T>::stack(size_t size)  : allocator<T>(size)
 {
 }
 template <typename T>
-void stack<T>::pop()
+size_t stack<T>::pop()
 {
 	if (allocator<T>::count_ == 0)
 	{
 		throw std::logic_error("Stack is empty!");
 	}
 	destroy(allocator<T>::array_ + allocator<T>::count_);
-	--allocator<T>::count_;
+	return --allocator<T>::count_;
 }
 template <typename T>
 const T& stack<T>::top()
@@ -128,7 +128,7 @@ stack<T>& stack<T>::operator=(const stack &obj)
 	return *this;
 }
 template<typename T> 
-bool stack<T>::empty() noexcept 
+bool stack<T>::empty() const noexcept 
 {
 	return (allocator<T>::count_ == 0);
 }
