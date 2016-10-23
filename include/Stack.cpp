@@ -128,7 +128,7 @@ stack<T>& stack<T>::operator=(const stack &obj)
 	return *this;
 }
 template<typename T> 
-bool stack<T>::empty() noexcept 
+bool stack<T>::empty()const noexcept 
 {
 	return (allocator<T>::count_ == 0);
 }
