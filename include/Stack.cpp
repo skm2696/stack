@@ -58,7 +58,7 @@ void allocator<T>::swap(allocator& stk)
 template <typename T>
 stack<T>::~stack()
 {
-	destroy(allocator<T>::ptr_, allocator<T>::ptr_ + allocator<T>::count_);
+	destroy(allocator<T>::array_, allocator<T>::array_ + allocator<T>::count_);
 }
 template <typename T>
 void stack<T>::push(T const &elem)
