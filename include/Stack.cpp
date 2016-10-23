@@ -85,7 +85,7 @@ stack<T>::stack(size_t size)  : allocator<T>(size)
 {
 }
 template <typename T>
-void stack<T>::pop()
+size_t stack<T>::pop()
 {
 	if (allocator<T>::count_ == 0)
 	{
