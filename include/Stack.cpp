@@ -108,7 +108,8 @@ const T& stack<T>::top()
 template <typename T>
 stack<T>::stack(const stack&tmp) : allocator<T>(tmp.array_size_)
 {
-	for( size_t i=0; i<tmp.count_; i++)
+	for( size_t i=0; i<tmp.count_; i++) 
+Construct(allocator<T>::array_+i, tmp.array_[i])
         allocator<T>::count_=tmp.count_;
 
 }
