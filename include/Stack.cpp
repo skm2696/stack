@@ -106,11 +106,11 @@ const T& stack<T>::top()
 
 
 template <typename T>
-stack<T>::stack(const stack&tmp) 
+stack<T>::stack(const stack&tmp) : allocator<T>(tmp.array_size_)
 {
-	allocator<T>::count_ = tmp.count_;
-	allocator<T>::array_size_ = tmp.array_size_;
-	allocator<T>::array_=copy_with_new(tmp.array_, tmp.count_, tmp.array_size_); 
+	for( size_t i=0; i<tmp.count_; i++)
+        allocator<T>::count_=tmp.count_;
+
 }
 template <typename T>
 stack<T>& stack<T>::operator=(const stack &obj)
