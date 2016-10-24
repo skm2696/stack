@@ -109,7 +109,7 @@ template <typename T>
 stack<T>::stack(const stack&tmp) : allocator<T>(tmp.array_size_)
 {
 	for( size_t i=0; i<tmp.count_; i++) 
-Construct(allocator<T>::array_+i, tmp.array_[i])
+        Construct(allocator<T>::array_+i, tmp.array_[i])
         allocator<T>::count_=tmp.count_;
 
 }
@@ -119,11 +119,7 @@ stack<T>& stack<T>::operator=(const stack &obj)
 
 	if (this != &obj)
 	{
-		T* stk = copy_with_new(obj.array_, obj.count_, obj.array_size_);
-		delete[] allocator<T>::array_;
-		allocator<T>::array_ = stk;
-		allocator<T>::array_size_ = obj.array_size_;
-		allocator<T>::count_ = obj.count_;
+	   (stack(tmp)).swap(*this);	
 	}
 
 	return *this;
