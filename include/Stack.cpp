@@ -1,149 +1,185 @@
+#include <iostream>
 #include "Stack.hpp"
 #include <stdexcept>
 #ifndef STACK_CPP
 #define STACK_CPP
-template <typename T1, typename T2>
-void construct(T1 * ptr, T2 const & value)
+auto bitset::size()-> size_t 
 {
-	new(ptr) T1(value);
+	return size_;
 }
-
+auto bitset::counter()-> size_t 
+{
+	return counter_;
+}
+bitset::bitset(size_t size) : ptr_(std::make_unique<bool[]>(size)), size_(size), counter_(0)
+{}
+auto bitset::test(size_t index) ->bool 
+{
+	if (index <= size()) 
+	{
+		return ptr_[index];
+	}
+	else 
+	{
+		throw std::out_of_range("Error");
+	}
+}
+auto bitset::reset(size_t index)->void 
+{
+	if (test(index) != false) 
+	{
+		ptr_[index] = false;
+		--counter_;
+	}
+}
+auto bitset::set(size_t index)->void 
+{
+	if (test(index) != true) 
+	{
+		ptr_[index] = true;
+		++counter_;
+	}
+}
+template <typename T> 
+allocator<T>::allocator(size_t size) : ptr_(static_cast<T *>(size == 0 ? nullptr : operator new(size * sizeof(T)))), size_(size), map_(std::make_unique<bitset>(size)) 
+{};
 template <typename T>
-void destroy(T * array) noexcept
+auto allocator<T>::construct(T * ptr, T const & value)->void 
 {
-	array->~T();
+	if (ptr < ptr_ || ptr >= ptr_ + size_)
+	{
+		throw std::out_of_range("Error");
+	}
+	new(ptr) T(value);
+	map_->set(ptr - ptr_);
 }
-
-template <typename FwdIter>
-void destroy(FwdIter first, FwdIter last) noexcept
+template <typename T>
+auto allocator<T>::destroy(T * ptr)->void
+{
+	ptr->~T();
+	map_->reset(ptr - ptr_);
+}
+template <typename T>
+auto allocator<T>::destroy(T * first, T * last)->void
 {
 	for (; first != last; ++first) 
 	{
 		destroy(&*first);
 	}
 }
-
-
-
-template <typename T>
-T* copy_with_new(const T * arr, size_t count, size_t array_size)
+template<typename T> 
+allocator<T>::allocator(allocator const & tmp) :allocator<T>(tmp.size_) 
 {
-	T * stk = new T[array_size];
-	try
+	for (size_t i = 0; i < size_; ++i) 
 	{
-		std::copy(arr, arr + count, stk);
+		construct(ptr_ + i, tmp.ptr_[i]);
 	}
-	catch (...)
-	{
-		delete[] stk;
-		throw;
-	}
-	return stk;
-};
-template <typename T>
-allocator<T>::allocator(size_t size) : array_(static_cast<T *>(size == 0 ? nullptr : operator new(size * sizeof(T)))), array_size_(size), count_(0) {
-};
+}
 template <typename T>
 allocator<T>::~allocator() 
 {
-	operator delete(array_);
+	if (map_->counter() > 0) 
+	{
+		destroy(ptr_, ptr_ + map_->counter());
+	}
+	operator delete(ptr_);
 };
 template <typename T>
-void allocator<T>::swap(allocator& stk)
+auto allocator<T>::swap(allocator & other)->void 
 {
-	std::swap(array_, stk.array_);
-	std::swap(array_size_, stk.array_size_);
-	std::swap(count_, stk.count_);
+	std::swap(ptr_, other.ptr_);
+	std::swap(size_, other.size_);
+	std::swap(map_, other.map_);
 };
-template <typename T>
-stack<T>::~stack()
-{
-	destroy(allocator<T>::array_, allocator<T>::array_ + allocator<T>::count_);
-}
-template <typename T>
-void stack<T>::push(T const &elem)
-{
-
-	if (allocator<T>::count_ == allocator<T>::array_size_)
-	{
-		size_t array_size = allocator<T>::array_size_*2+(allocator<T>::array_size_==0);
-		stack<T> temp(array_size);
-		while (temp.count() < allocator<T>::count_) temp.push(allocator<T>::array_[temp.count()]); 
-		this->swap(temp);
-	}
-	construct(allocator<T>::array_ + allocator<T>::count_, elem);
-	++allocator<T>::count_;
-
-}
-template <typename T>
-size_t stack<T>::count() const noexcept
-{
-	return allocator<T>::count_;
-}
-template <typename T>
-stack<T>::stack(size_t size)  : allocator<T>(size)
-{
-}
-template <typename T>
-size_t stack<T>::pop()
-{
-	if (allocator<T>::count_ == 0)
-	{
-		throw std::logic_error("Stack is empty!");
-	}
-	destroy(allocator<T>::array_ + allocator<T>::count_);
-	return --allocator<T>::count_;
-}
-template <typename T>
-const T& stack<T>::top()
-{
-	if (allocator<T>::count_ == 0)
-	{
-		throw std::logic_error("Stack is empty!");
-	}
-	return allocator<T>::array_[allocator<T>::count_ - 1];
-}
-
-
-template <typename T>
-stack<T>::stack(const stack&tmp) : allocator<T>(tmp.array_size_)
-{
-	for( size_t i=0; i<tmp.count_; i++) 
-        Construct(allocator<T>::array_+i, tmp.array_[i])
-        allocator<T>::count_=tmp.count_;
-
-}
-template <typename T>
-stack<T>& stack<T>::operator=(const stack &obj)
-{
-
-	if (this != &obj)
-	{
-	   (stack(tmp)).swap(*this);	
-	}
-
-	return *this;
-}
-template<typename T> 
-bool stack<T>::empty() const noexcept 
-{
-	return (allocator<T>::count_ == 0);
-}
-
 template<typename T>
-bool stack<T>::operator==(stack const & rhs)
+auto allocator<T>::resize()-> void 
 {
-	if ((rhs.count_ != allocator<T>::count_) || (rhs.array_size_ != allocator<T>::array_size_)) {
-		return false;
-	}
-	else {
-		for (size_t i = 0; i < allocator<T>::count_; i++) {
-			if (rhs.array_[i] != allocator<T>::array_[i]) {
-				return false;
-			}
+	size_t size = size_ * 2 + (size_ == 0);
+	allocator<T> buff(size);
+	for (size_t i = 0; i < size_; ++i) 
+	{
+		if (map_->test(i))
+		{
+			buff.construct(buff.ptr_ + i, ptr_[i]);
 		}
 	}
-	return true;
+	this->swap(buff);
+	size_ = size;
+}
+template<typename T>
+auto allocator<T>::empty() const -> bool 
+{
+	return (map_->counter() == 0);
+}
+template<typename T>
+auto allocator<T>::full() const -> bool 
+{
+	return (map_->counter() == size_);
+}
+template<typename T>
+auto allocator<T>::get() -> T * 
+{
+	return ptr_;
+}
+template<typename T>
+auto allocator<T>::get() const -> T const * 
+{
+	return ptr_;
+}
+template<typename T>
+auto allocator<T>::count() const -> size_t 
+{
+	return map_->counter();
+}
+template<typename T>
+auto stack<T>::empty() const->bool 
+{
+	return (allocate.count() == 0);
+}
+template <typename T>
+stack<T>::stack(size_t size) : allocate(size) 
+{};
+template <typename T>
+auto stack<T>::push(T const &val)->void 
+{
+	if (allocate.full()) 
+	{
+		allocate.resize();
+	}
+	allocate.construct(allocate.get() + allocate.count(), val);
+}
+template <typename T>
+auto stack<T>::operator=(const stack &tmp)->stack& 
+{
+	if (this != &tmp) 
+	{
+		stack(tmp).allocate.swap(allocate);
+	}
+	return *this;
+}
+template <typename T>
+auto stack<T>::count() const->size_t 
+{
+	return allocate.count();
+}
+template <typename T>
+auto stack<T>::pop()->void 
+{
+	if (allocate.count() == 0) throw std::logic_error("Empty!");
+	allocate.destroy(allocate.get() + (this->count() - 1));
+}
+template <typename T>
+auto stack<T>::top() const->const T&
+{
+	if (allocate.count() == 0) throw std::logic_error("Empty!");
+	return(*(allocate.get() + this->count() - 1));
+
+}
+template <typename T>
+auto stack<T>::top()->T& 
+{
+	if (allocate.count() == 0) throw std::logic_error("Empty!");
+	return(*(allocate.get() + this->count() - 1));
 }
 
 #endif
