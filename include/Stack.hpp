@@ -1,36 +1,74 @@
 #pragma once
 #ifndef STACK_HPP
 #define STACK_HPP
-#include <iostream>
-template<typename T>
-class allocator
-{
-protected:
-	allocator(size_t size = 0);
-	~allocator();
-	void swap(allocator& stk);
-	allocator(allocator const&) = delete;
-	allocator& operator=(allocator const&) = delete;
-
-	T * array_;
-	size_t array_size_;
-	size_t count_;
-};
-template <typename T>
-class stack : private allocator<T>
+#include <new>  
+#include <vector>
+#include <memory>
+class bitset
 {
 public:
-	stack(size_t size=0);
-	~stack();
-	stack(const stack & obj);
-	size_t count() const noexcept;
-	void push(T const &);
-	size_t pop();
-	const T& top();
-	stack & operator=(const stack &obj);
-	bool operator==(stack const & rhs);
-	bool empty() const noexcept;
+	explicit
+		bitset(size_t size) /*strong*/;
+	bitset(bitset const & other) = delete;
+	auto operator =(bitset const & other)->bitset & = delete;
+	bitset(bitset && other) = delete;
+	auto operator =(bitset && other)->bitset & = delete;
+	auto set(size_t index) /*strong*/ -> void;
+	auto reset(size_t index) /*strong*/ -> void;
+	auto test(size_t index) /*strong*/ -> bool;
+	auto counter() /*noexcept*/ -> size_t;
+	auto size() /*noexcept*/ -> size_t;
 
+private:
+	std::unique_ptr<bool[]>  ptr_;
+	size_t size_;
+	size_t counter_;
+};
+template <typename T>
+class allocator
+{
+public:
+	explicit
+		allocator(std::size_t size = 0) /*strong*/;
+	allocator(allocator const & other) /*strong*/;
+	auto operator =(allocator const & other)->allocator & = delete;
+	~allocator();/*noexcept*/
+
+	auto resize() /*strong*/ -> void;
+
+	auto construct(T * ptr, T const & value) /*strong*/ -> void;
+	auto destroy(T * ptr) /*noexcept*/ -> void;
+
+	auto get() /*noexcept*/ -> T *;
+	auto get() const /*noexcept*/ -> T const *;
+
+	auto count() const /*noexcept*/ -> size_t;
+	auto full() const /*noexcept*/ -> bool;
+	auto empty() const /*noexcept*/ -> bool;
+	auto swap(allocator & other) /*noexcept*/ -> void;
+private:
+	auto destroy(T * first, T * last) /*noexcept*/ -> void;
+	size_t size_;
+	T * ptr_;
+	std::unique_ptr<bitset> map_;
+};
+template <typename T>
+class stack
+{
+public:
+	explicit
+		stack(size_t size = 0);/*strong*/
+	auto operator =(stack const & other) /*strong*/ -> stack &;
+	stack(stack const & other) = default;/*strong*/
+	auto empty() const /*noexcept*/ -> bool;
+	auto count() const /*noexcept*/ -> size_t;
+	auto push(T const & value) /*strong*/ -> void;
+	auto pop() /*strong*/ -> void;
+	auto top() /*strong*/ -> T &;
+	auto top() const /*strong*/ -> T const &;
+
+private:
+	allocator<T> allocate;
 };
 #include "Stack.cpp"
 #endif
