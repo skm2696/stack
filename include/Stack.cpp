@@ -50,14 +50,20 @@ auto allocator<T>::construct(T * ptr, T const & value)->void
 	{
 		throw std::out_of_range("Error");
 	}
+for(size_t i = 0; i<size_; ++i)
+if(map_->test(i)){
 	new(ptr) T(value);
 	map_->set(ptr - ptr_);
 }
+}
 template <typename T>
 auto allocator<T>::destroy(T * ptr)->void
-{
+{ 
+for (size_t i=0; i<size_; ++i)
+if(map->test(i){
 	ptr->~T();
 	map_->reset(ptr - ptr_);
+}
 }
 template <typename T>
 auto allocator<T>::destroy(T * first, T * last)->void
@@ -96,15 +102,8 @@ auto allocator<T>::resize()-> void
 {
 	size_t size = size_ * 2 + (size_ == 0);
 	allocator<T> buff(size);
-	for (size_t i = 0; i < size_; ++i) 
-	{
-		if (map_->test(i))
-		{
-			buff.construct(buff.ptr_ + i, ptr_[i]);
-		}
-	}
+	buff.construct(buff.ptr_ + i, ptr_[i]);		
 	this->swap(buff);
-	size_ = size;
 }
 template<typename T>
 auto allocator<T>::empty() const -> bool 
