@@ -46,24 +46,24 @@ allocator<T>::allocator(size_t size) : ptr_(static_cast<T *>(size == 0 ? nullptr
 template <typename T>
 auto allocator<T>::construct(T * ptr, T const & value)->void 
 {
-	if (ptr < ptr_ || ptr >= ptr_ + size_)
+	if (ptr < ptr_ || ptr >= ptr_ + size_ || map_->test(ptr-ptr_) == false)
 	{
 		throw std::out_of_range("Error");
 	}
-for(size_t i = 0; i<size_; ++i)
-if(map_->test(i)){
 	new(ptr) T(value);
 	map_->set(ptr - ptr_);
-}
+
 }
 template <typename T>
 auto allocator<T>::destroy(T * ptr)->void
 { 
-for (size_t i=0; i<size_; ++i)
-if(map->test(i){
+if (ptr < ptr_ || ptr >= ptr_ + size_ || map_->test(ptr-ptr_) == false)
+{
+		throw std::out_of_range("Error");
+}
 	ptr->~T();
 	map_->reset(ptr - ptr_);
-}
+
 }
 template <typename T>
 auto allocator<T>::destroy(T * first, T * last)->void
