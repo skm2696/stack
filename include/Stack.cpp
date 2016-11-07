@@ -102,7 +102,8 @@ auto allocator<T>::resize()-> void
 {
 	size_t size = size_ * 2 + (size_ == 0);
 	allocator<T> buff(size);
-	buff.construct(buff.ptr_ + i, ptr_[i]);		
+        for (size_t i=0; i < size_; ++i)
+	    buff.construct(buff.ptr_ + i, ptr_[i]);		
 	this->swap(buff);
 }
 template<typename T>
