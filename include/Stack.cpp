@@ -46,7 +46,7 @@ allocator<T>::allocator(size_t size) : ptr_(static_cast<T *>(size == 0 ? nullptr
 template <typename T>
 auto allocator<T>::construct(T * ptr, T const & value)->void 
 {
-	if (ptr < ptr_ || ptr >= ptr_ + size_ || map_->test(ptr-ptr_) == false)
+	if (ptr < ptr_ || ptr >= ptr_ + size_ )
 	{
 		throw std::out_of_range("Error");
 	}
