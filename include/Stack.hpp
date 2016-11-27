@@ -19,17 +19,17 @@ public:
 	auto any() noexcept -> bool;
 	auto count() const noexcept->size_t;
 	auto flip() noexcept -> void;
-	auto flip(size_t pos) throw(std::out_of_range) -> void;
+	auto flip(size_t pos)  -> void;
 	auto none() const noexcept -> bool;
 	auto resize() noexcept -> void;
 	auto reset() noexcept -> void;
-	auto reset(size_t pos) throw(std::out_of_range) -> void;
+	auto reset(size_t pos)  -> void;
 	auto set() noexcept -> void;
-	auto set(size_t pos) throw(std::out_of_range) -> void;
+	auto set(size_t pos) ) -> void;
 	auto size() const noexcept->size_t;
-	auto test(size_t pos) const throw(std::out_of_range) -> bool;
+	auto test(size_t pos)  -> bool;
 
-	auto operator[](size_t pos) throw(std::out_of_range) -> bool;
+	auto operator[](size_t pos)  -> bool;
 private:
 	std::vector<bool> bits;
 };
