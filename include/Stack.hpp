@@ -27,7 +27,7 @@ public:
 	auto set() noexcept -> void;
 	auto set(size_t pos) -> void;
 	auto size() const noexcept->size_t;
-	auto test(size_t pos)  -> bool;
+	auto test(size_t pos) const -> bool;
 
 	auto operator[](size_t pos)  -> bool;
 private:
