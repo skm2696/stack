@@ -55,7 +55,7 @@ inline auto dynamic_bitset::flip() noexcept -> void
 	}
 }
 
-inline auto dynamic_bitset::flip(size_t pos) throw(std::out_of_range) -> void 
+inline auto dynamic_bitset::flip(size_t pos) -> void 
 {
 	if (pos < bits.size()) 
 	{
@@ -89,7 +89,7 @@ inline auto dynamic_bitset::reset() noexcept -> void
 	}
 }
 
-inline auto dynamic_bitset::reset(size_t pos) throw(std::out_of_range) -> void
+inline auto dynamic_bitset::reset(size_t pos)  -> void
 {
 	if (pos < bits.size()) 
 	{
