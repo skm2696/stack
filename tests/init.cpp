@@ -1,6 +1,5 @@
 #include "Stack.hpp"
 #include <catch.hpp>
-
 SCENARIO("Stack: init", "[init]") {
 	stack<size_t> a;
 	// object is created and memory allocated for it
