@@ -1,65 +1,77 @@
 #include "Stack.hpp"
 #include <catch.hpp>
-#include <iostream>
-using namespace std;
-  
 
-SCENARIO("count", "[count]"){
-  stack<int> s;
-  s.push(1);
-  REQUIRE(s.count()==1);
+SCENARIO("Stack: init", "[init]") {
+	stack<size_t> a;
+	// object is created and memory allocated for it
+	REQUIRE(sizeof(a) != 0);
 }
 
-SCENARIO("push", "[push]"){
-  stack<int> s;
-  s.push(1);
-  REQUIRE(s.count()==1);
-
+SCENARIO("Stack: operator==", "[op==]") {
+	stack<size_t> a, b;
+	a.push(1);
+	b.push(1);
+	REQUIRE(a == b);
 }
 
-SCENARIO("top", "[top]"){
-  stack<int> s;
-  s.push(1);
-  s.push(2);
-  s.push(3);
-  s.pop();
-
-  REQUIRE(s.top()==2);
-}
-SCENARIO("operprisv", "[operprisv]"){
-  stack<int> s1;
-  s1.push(1);
-  stack<int> s2;
-  s2=s1;
-  REQUIRE(s1.count()==s2.count());
+SCENARIO("Stack: count", "[count]") {
+	stack<size_t> a;
+	a.push(1);
+	a.push(2);
+	REQUIRE(a.count() == 2);
 }
 
-SCENARIO("const", "[constr]"){
-  stack<int> s1;
-  s1.push(1);
-  stack<int> s2=s1;
-  REQUIRE(s1.count()==s2.count());
+SCENARIO("Stack: top", "[top]") {
+	stack<size_t> a;
+	a.push(1);
+	a.push(2);
+	REQUIRE(a.top() == 2);
 }
 
-SCENARIO("empty", "[empty]"){
-  stack<int> s1;
-  s1.push(1);
-  REQUIRE(s1.empty()==false);
+SCENARIO("Stack: pop", "[pop]") {
+	stack<size_t> a;
+	a.push(1);
+	a.push(2);
+	a.pop();
+	REQUIRE(a.count() == 1);
 }
 
-SCENARIO("empty2", "[empty2]"){
-  stack<int> s1;
-  s1.push(1);
-  s1.pop();
-  REQUIRE(s1.empty()==true);
+SCENARIO("Stack: push", "[push]") {
+	stack<size_t> a;
+	a.push(1);
+	REQUIRE(a.top() == 1);
+	REQUIRE(a.count() == 1);
 }
 
-SCENARIO("empty3", "[empty3]"){
-  stack<int> s1;
-  s1.push(1);
-  s1.push(2);
-  s1.pop();
-  s1.top();
-  
-  REQUIRE(s1.empty()==false);
+SCENARIO("Stack: operator=", "[op=]") {
+	stack<size_t> a;
+	a.push(1);
+	stack<size_t> b;
+	b = a;
+	REQUIRE(b == a);
+}
+
+auto push(stack<size_t> st, size_t elem) -> void {
+	st.push(elem);
+	std::cout << "pushed" << std::endl;
+}
+
+auto pop(stack<size_t> st) -> void {
+	st.pop();
+	std::cout << "popped" << std::endl;
+}
+
+SCENARIO("Stack: top and pop threads", "threads") {
+	stack<size_t> st;
+	st.push(0);
+	std::thread t1(&stack<size_t>::push, &st, 1);
+	t1.join();
+	REQUIRE(st.top() == 1);
+	REQUIRE(st.count() == 2);
+	REQUIRE(st.empty() == false);
+	std::thread t2(&stack<size_t>::pop, &st);
+	t2.join();
+	REQUIRE(st.top() == 0);
+	REQUIRE(st.count() == 1);
+	REQUIRE(st.empty() == false);
 }
