@@ -1,74 +1,89 @@
 #pragma once
+#include <iostream>
+#include <stdexcept>
+#include <vector>
+#include <mutex>
+#include <thread>
+
 #ifndef STACK_HPP
 #define STACK_HPP
-#include <new>  
-#include <vector>
-#include <memory>
-class bitset
-{
-public:
-	explicit
-		bitset(size_t size) /*strong*/;
-	bitset(bitset const & other) = delete;
-	auto operator =(bitset const & other)->bitset & = delete;
-	bitset(bitset && other) = delete;
-	auto operator =(bitset && other)->bitset & = delete;
-	auto set(size_t index) /*strong*/ -> void;
-	auto reset(size_t index) /*strong*/ -> void;
-	auto test(size_t index) /*strong*/ -> bool;
-	auto counter() /*noexcept*/ -> size_t;
-	auto size() /*noexcept*/ -> size_t;
 
+using std::size_t;
+using std::ostream;
+
+class dynamic_bitset {
+public:
+	explicit dynamic_bitset(size_t size = 0) noexcept;
+
+	auto all() const noexcept -> bool;
+	auto any() noexcept -> bool;
+	auto count() const noexcept->size_t;
+	auto flip() noexcept -> void;
+	auto flip(size_t pos) throw(std::out_of_range) -> void;
+	auto none() const noexcept -> bool;
+	auto resize() noexcept -> void;
+	auto reset() noexcept -> void;
+	auto reset(size_t pos) throw(std::out_of_range) -> void;
+	auto set() noexcept -> void;
+	auto set(size_t pos) throw(std::out_of_range) -> void;
+	auto size() const noexcept->size_t;
+	auto test(size_t pos) const throw(std::out_of_range) -> bool;
+
+	auto operator[](size_t pos) throw(std::out_of_range) -> bool;
 private:
-	std::unique_ptr<bool[]>  ptr_;
-	size_t size_;
-	size_t counter_;
+	std::vector<bool> bits;
 };
+
 template <typename T>
-class allocator
-{
+class allocator {
 public:
-	explicit
-		allocator(std::size_t size = 0) /*strong*/;
-	allocator(allocator const & other) /*strong*/;
-	auto operator =(allocator const & other)->allocator & = delete;
-	~allocator();/*noexcept*/
+	explicit allocator(size_t size = 0);
+	allocator(allocator const & other);
+	auto operator=(allocator const & other)->allocator & = delete;
+	~allocator();
 
-	auto resize() /*strong*/ -> void;
-
-	auto construct(T * ptr, T const & value) /*strong*/ -> void;
-	auto destroy(T * ptr) /*noexcept*/ -> void;
-
-	auto get() /*noexcept*/ -> T *;
-	auto get() const /*noexcept*/ -> T const *;
-
-	auto count() const /*noexcept*/ -> size_t;
-	auto full() const /*noexcept*/ -> bool;
-	auto empty() const /*noexcept*/ -> bool;
-	auto swap(allocator & other) /*noexcept*/ -> void;
+	auto construct(T * ptr, T const & value) -> void;
+	auto count() const -> size_t;
+	auto destroy(T * ptr) -> void;
+	auto empty() const -> bool;
+	auto full() const -> bool;
+	auto get() -> T *;
+	auto get() const -> T const *;
+	auto resize() -> void;
+	auto swap(allocator & other) -> void;
 private:
-	auto destroy(T * first, T * last) /*noexcept*/ -> void;
-	size_t size_;
 	T * ptr_;
-	std::unique_ptr<bitset> map_;
-};
-template <typename T>
-class stack
-{
-public:
-	explicit
-		stack(size_t size = 0);/*strong*/
-	auto operator =(stack const & other) /*strong*/ -> stack &;
-	stack(stack const & other) = default;/*strong*/
-	auto empty() const /*noexcept*/ -> bool;
-	auto count() const /*noexcept*/ -> size_t;
-	auto push(T const & value) /*strong*/ -> void;
-	auto pop() /*strong*/ -> void;
-	auto top() /*strong*/ -> T &;
-	auto top() const /*strong*/ -> T const &;
+	size_t size_;
+	dynamic_bitset bitset_;
+	mutable std::mutex mut;
 
-private:
-	allocator<T> allocate;
+	template <typename FwdIter>
+	auto destroy(FwdIter first, FwdIter last) noexcept -> void;
 };
-#include "Stack.cpp"
+
+template<typename T>
+class stack {
+public:
+	explicit stack(size_t size = 0); /*noexcept*/
+	stack(stack const & rhs) = default; /*strong*/
+	~stack(); /*noexcept*/
+
+	auto count() const noexcept -> size_t; /*noexcept*/
+	auto empty() const noexcept -> bool; /*noexcept*/
+	auto top() const -> const T&; /*strong*/
+	auto pop() -> void; /*strong*/
+	auto push(T const & value) -> void; /*strong*/
+
+	auto print() -> void;
+
+	auto operator=(stack const & rhs) -> stack &; /*strong*/
+	auto operator==(stack const & rhs) -> bool; /*noexcept*/
+private:
+	allocator<T> alloc;
+
+	mutable std::mutex mut;
+};
+
+#include "stack.cpp"
+
 #endif
