@@ -124,7 +124,7 @@ inline auto dynamic_bitset::size() const noexcept -> size_t {
 	return bits.size();
 }
 
-inline auto dynamic_bitset::test(size_t pos)  -> bool 
+inline auto dynamic_bitset::test(size_t pos) const -> bool 
 {
 	if (pos < bits.size()) 
 	{
