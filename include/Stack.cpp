@@ -1,400 +1,166 @@
 #include "Stack.hpp"
 #ifndef STACK_CPP
 #define STACK_CPP
+bitset::bitset(size_t size) : ptr_(std::make_unique<bool[]>(size)), size_(size), counter_(0){}
 
-inline dynamic_bitset::dynamic_bitset(size_t size) noexcept : bits(size) 
-{}
-
-inline auto dynamic_bitset::all() const noexcept -> bool 
-{
-	auto check = true;
-	for (auto i : bits) 
-	{
-		if (i == false) 
-		{
-			check = false;
-			break;
-		}
-	}
-	return check;
+auto bitset::set(size_t index)->void {
+	if (index >= 0 && index < size_) { ptr_[index] = true; ++counter_; }
+	else throw("bad_index");
 }
 
-inline auto dynamic_bitset::any() noexcept -> bool 
-{
-	auto check = false;
-	for (auto i : bits) 
-	{
-		if (i == true)
-		{
-			check = true;
-			break;
-		}
-	}
-	return check;
+auto bitset::reset(size_t index)->void {
+	if (index >= 0 && index < size_) { ptr_[index] = false; --counter_; }
+	else throw("bad_index");
 }
 
-inline auto dynamic_bitset::count() const noexcept -> size_t 
-{
-	size_t counter = 0;
-	for (auto i : bits) 
-	{
-		if (i) 
-		{
-			++counter;
-		}
-	}
-	return counter;
+auto bitset::test(size_t index)->bool {
+	if (index >= 0 && index < size_) return !ptr_[index];
+	else throw("bad_index");
 }
 
-inline auto dynamic_bitset::flip() noexcept -> void 
-{
-	for (auto i : bits) 
-	{
-		i.flip();
-	}
-}
+auto bitset::size()->size_t{ return size_; }
 
-inline auto dynamic_bitset::flip(size_t pos) -> void 
-{
-	if (pos < bits.size()) 
-	{
-		bits.at(pos).flip();
-	}
-	else 
-	{
-		throw std::out_of_range("out of range");
-	}
-}
+auto bitset::counter()->size_t{ return counter_; }
 
-inline auto dynamic_bitset::none() const noexcept -> bool 
-{
-	auto check = true;
-	for (auto i : bits)
-	{
-		if (i == true)
-		{
-			check = false;
-			break;
-		}
-	}
-	return check;
-}
-
-inline auto dynamic_bitset::reset() noexcept -> void
-{
-	for (auto i : bits) 
-	{
-		i = false;
-	}
-}
-
-inline auto dynamic_bitset::reset(size_t pos)  -> void
-{
-	if (pos < bits.size()) 
-	{
-		bits.at(pos) = false;
-	}
-	else {
-		throw std::out_of_range("out of range");
-	}
-}
-
-inline auto dynamic_bitset::set() noexcept -> void 
-{
-	for (auto i : bits) 
-	{
-		i = true;
-	}
-}
-
-inline auto dynamic_bitset::set(size_t pos) -> void 
-{
-	if (pos < bits.size()) 
-	{
-		bits.at(pos) = true;
-	}
-	else 
-	{
-		throw std::out_of_range("out of range");
-	}
-}
-
-inline auto dynamic_bitset::size() const noexcept -> size_t {
-	return bits.size();
-}
-
-inline auto dynamic_bitset::test(size_t pos) const -> bool 
-{
-	if (pos < bits.size()) 
-	{
-		return bits.at(pos);
-	}
-	else 
-	{
-		throw std::out_of_range("out of range");
-	}
-}
-
-inline auto dynamic_bitset::operator[](size_t pos)  -> bool 
-{
-	if (pos < bits.size()) 
-	{
-		return bits.at(pos);
-	}
-	else 
-	{
-		throw std::out_of_range("out of range");
-	}
-}
-
-inline auto dynamic_bitset::resize() noexcept -> void 
-{
-	bits.resize(bits.size() * 2 + (bits.size() == 0));
-}
-
+///////////////////////
 
 template<typename T>
-inline allocator<T>::allocator(size_t size) : ptr_(static_cast<T *>(size == 0 ? nullptr : operator new(size * sizeof(T)))), size_(size), bitset_(size) 
-{}
+allocator<T>::allocator(size_t size) : ptr_((T*)operator new(size*sizeof(T))), size_(size), map_(std::make_unique<bitset>(size)) {}
 
 template<typename T>
-inline allocator<T>::allocator(allocator const & other) : allocator<T>(other.size_) 
-{
-	for (size_t i = 0; i < other.bitset_.count(); ++i)
-	{
-		if (other.bitset_.test(i) == true) 
-		{
-			this->construct(this->ptr_ + i, other.ptr_[i]);
-		}
-	}
+allocator<T>::allocator(allocator const& other) : allocator<T>(other.size_) {
+	for (size_t i = 0; i < size_; i++) construct(ptr_ + i, other.ptr_[i]);
 }
 
 template<typename T>
-inline auto allocator<T>::construct(T * ptr, T const & value) -> void 
-{
-	if (ptr < ptr_ || ptr >= ptr_ + size_)
-	{
-		throw std::out_of_range("out of range");
+allocator<T>::~allocator(){
+	if (this->count() > 0) {
+		destroy(ptr_, ptr_ + size_);
 	}
-	new(ptr) T(value);
-	bitset_.set(ptr - ptr_);
-}
-
-template<typename T>
-inline auto allocator<T>::count() const -> size_t
-{
-	return bitset_.count();
-}
-
-template<typename T>
-inline auto allocator<T>::destroy(T * ptr) -> void 
-{
-	if (ptr < ptr_ || ptr >= ptr_ + size_) 
-	{
-		throw std::out_of_range("out of range");
-	}
-	ptr->~T();
-	bitset_.reset(ptr - ptr_);
-}
-
-template<typename T>
-inline auto allocator<T>::empty() const -> bool 
-{
-	return (bitset_.count() == 0);
-}
-
-template<typename T>
-inline auto allocator<T>::full() const -> bool 
-{
-	return (bitset_.count() == bitset_.size());
-}
-
-template<typename T>
-inline auto allocator<T>::get() -> T * 
-{
-	return ptr_;
-}
-
-template<typename T>
-inline auto allocator<T>::get() const -> T const * 
-{
-	return ptr_;
-}
-
-template<typename T>
-inline auto allocator<T>::resize() -> void 
-{
-	auto size = size_ * 2 + (size_ == 0);
-	allocator<T> buff(size);
-	for (size_t i = 0; i < size_; ++i) 
-	{
-		buff.construct(buff.ptr_ + i, ptr_[i]);
-	}
-	this->swap(buff);
-}
-
-template<typename T>
-inline allocator<T>::~allocator() 
-{
 	operator delete(ptr_);
 }
 
-template<typename T> /*noexcept*/
-inline auto allocator<T>::swap(allocator & other) -> void
-{
-	std::swap(ptr_, other.ptr_);
-	std::swap(size_, other.size_);
-	std::swap(bitset_, other.bitset_);
+template<typename T>
+auto allocator<T>::resize()->void{
+	allocator<T> al(size_ * 2 + (size_ == 0)); //std::cout << size_ << "!!!" << map_->counter()<<std::endl;
+	for (size_t i = 0; i < size_; ++i) if (al.map_->test(i)) al.construct(al.get() + i, ptr_[i]);
+	this->swap(al);
 }
 
 template<typename T>
-template<typename FwdIter>
-inline auto allocator<T>::destroy(FwdIter first, FwdIter last) noexcept -> void
-{
-	for (; first != last; ++first) 
+auto allocator<T>::construct(T * ptr, T const & value)->void{
+	if (ptr >= ptr_&&ptr < ptr_ + size_){
+		new(ptr)T(value);
+		map_->set(ptr - ptr_);
+	}
+	else { throw("error"); }
+}
+
+template<typename T>
+auto allocator<T>::destroy(T* ptr)->void{
+	if (!map_->test(ptr - ptr_) && ptr >= ptr_&&ptr <= ptr_ + this->count())
 	{
+		ptr->~T(); map_->reset(ptr - ptr_);
+	}
+}
+
+template<typename T>
+auto allocator<T>::get()-> T* { return ptr_; }
+
+template<typename T>
+auto allocator<T>::get() const -> T const * { return ptr_; }
+
+template<typename T>
+auto allocator<T>::count() const -> size_t{ return map_->counter(); }
+
+template<typename T>
+auto allocator<T>::full() const -> bool { return (map_->counter() == size_); }
+
+template<typename T>
+auto allocator<T>::empty() const -> bool { return (map_->counter() == 0); }
+
+template<typename T>
+auto allocator<T>::destroy(T * first, T * last)->void{
+	if (first >= ptr_&&last <= ptr_ + this->count())
+	for (; first != last; ++first) {
 		destroy(&*first);
 	}
 }
 
-
-template<typename T> /*noexcept*/
-inline stack<T>::stack(size_t size) : alloc(size), mut() 
-{}
-
-template<typename T> /*noexcept*/
-inline stack<T>::~stack() 
-{}
-
-template<typename T> /*noexcept*/
-inline auto stack<T>::count() const noexcept -> size_t 
-{
-	std::lock_guard<std::mutex> lock(mut);
-	return alloc.count();
+template<typename T>
+auto allocator<T>::swap(allocator & other)->void{
+	std::swap(ptr_, other.ptr_);
+	std::swap(size_, other.size_);
+	std::swap(map_, other.map_);
 }
-
-template<typename T> /*noexcept*/
-inline auto stack<T>::empty() const noexcept -> bool
-{
-	std::lock_guard<std::mutex> lock(mut);
-	return (alloc.count() == 0);
-}
-
-template<typename T> /*strong*/
-inline auto stack<T>::top() const -> const T&
-{
-	std::lock_guard<std::mutex> lock(mut);
-	if (alloc.count() == 0) 
-	{
-		throw;
-	}
-	else 
-	{
-		return alloc.get()[alloc.count() - 1];
-	}
-}
-
-template<typename T> /*strong*/
-inline auto stack<T>::pop() -> void 
-{
-	std::lock_guard<std::mutex> lock(mut);
-	if (alloc.count() == 0) 
-	{
-		throw;
-	}
-	else 
-	{
-		alloc.destroy(alloc.get() + alloc.count() - 1);
-	}
-}
-
-template<typename T> /*strong*/
-inline auto stack<T>::push(T const & value) -> void 
-{
-	std::lock_guard<std::mutex> lock(mut);
-	if (alloc.full() == true) 
-	{
-		alloc.resize();
-	}
-	alloc.construct(alloc.get() + alloc.count(), value);
-}
+///////////////
 
 template<typename T>
-auto stack<T>::print() -> void 
-{
-	std::lock_guard<std::mutex> lock(mut);
-	for (size_t i = 0; i < alloc.count(); ++i) 
-	{
-		std::cout << alloc.get()[i] << " ";
-	}
-}
-
-template<typename T> /*strong*/
-inline auto stack<T>::operator=(stack const & rhs) -> stack & 
-{
-	std::lock_guard<std::mutex> lock(mut);
-	if (this != &rhs) 
-	{
-		(allocator<T>(rhs.alloc)).swap(this->alloc);
+stack<T>::stack(size_t size) : allocator_(size){}
+////////////////////////////////B JIIO6ou HenoH9lTHou cuTyaLLuu 3axBaTblBau mutex.
+template<typename T>
+auto stack<T>::operator =(stack const & other)-> stack &{
+	if (this != &other) {
+		std::lock_guard<std::mutex> lk(m);
+		(allocator<T>(other.allocator_)).swap(allocator_);
 	}
 	return *this;
 }
 
-template<typename T> /*noexcept*/
-inline auto stack<T>::operator==(stack const & rhs) -> bool 
+template<typename T>
+auto stack<T>::empty() const ->bool
 {
-	std::lock_guard<std::mutex> lock(mut);
-	if (rhs.alloc.count() != this->alloc.count()) 
-	{
-		return false;
-	}
+	return allocator_.empty();
+}
+
+template<typename T>
+auto stack<T>::count()const->size_t
+{
+	return allocator_.count();
+}
+
+template<typename T>
+auto stack<T>::push(T const & value)->void{
+	std::lock_guard<std::mutex> lk(m);
+	if (allocator_.full()) allocator_.resize();
+	allocator_.construct(allocator_.get() + this->count(), value);
+}
+
+template<typename T>
+auto stack<T>::pop()->void{
+	std::lock_guard<std::mutex> lk(m);
+	if (this->count() > 0) allocator_.destroy(allocator_.get() + (this->count() - 1));
 	else 
 	{
-		for (size_t i = 0; i < alloc.count(); i++)
-		{
-			if (this->alloc.get()[i] != rhs.alloc.get()[i])
-			{
-				return false;
-			}
-		}
+		this->throw_is_empty();
 	}
-	return true;
 }
 
-template<typename T>  /*strong*/
-auto copy(const T * rhs, size_t sizeLeft, size_t sizeRight) -> T * 
-{
-	T * m_array = new T[sizeRight];
-	try 
+template<typename T>
+auto stack<T>::top()->T& {
+	std::lock_guard<std::mutex> lk(m);
+	if (this->count() > 0)
 	{
-		std::copy(rhs, rhs + sizeLeft, m_array);
+		return(*(allocator_.get() + this->count() - 1));
 	}
-	catch (...) 
+	else
 	{
-		delete[] m_array;
-		throw;
+		this->throw_is_empty();
 	}
-	return m_array;
 }
 
-template <typename T1, typename T2>
-inline auto construct(T1 * ptr, T2 const & value) -> void 
-{
-	new(ptr) T1(value);
-}
-
-template <typename T>
-inline auto destroy(T * ptr) noexcept -> void 
-{
-	ptr->~T();
-}
-
-template <typename FwdIter>
-inline auto destroy(FwdIter first, FwdIter last) noexcept -> void 
-{
-	for (; first != last; ++first) 
+template<typename T>
+auto stack<T>::top()const->T const & {
+	if (this->count() > 0)
 	{
-		destroy(&*first);
+		return(*(allocator_.get() + this->count() - 1));
+	}
+	else
+	{
+		this->throw_is_empty();
 	}
 }
+
+template<typename T>
+auto stack<T>::throw_is_empty()const->void{ throw("empty"); }
 #endif // STACK_CPP
