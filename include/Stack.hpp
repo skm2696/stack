@@ -32,7 +32,7 @@ public:
 private:
 	std::unique_ptr<bool[]>  ptr_;
 	size_t size_;
-	size_t count_;
+	size_t counter_;
 };
 
 template <typename T>
