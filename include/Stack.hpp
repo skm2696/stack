@@ -32,7 +32,7 @@ public:
 private:
 	std::unique_ptr<bool[]>  ptr_;
 	size_t size_;
-	size_t counter_;
+	size_t count_;
 };
 
 template <typename T>
@@ -79,7 +79,7 @@ public:
 private:
 	allocator<T> allocator_;
 	auto throw_is_empty()/*strong*/ const -> void;
-	std::mutex m;
+	std::mutex mutex_;
 };
 #include "Stack.cpp"
 
