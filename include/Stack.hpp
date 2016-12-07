@@ -57,10 +57,11 @@ public:
 	auto swap(allocator & other) /*noexcept*/ -> void;
 private:
 	auto destroy(T * first, T * last) /*noexcept*/ -> void;
-
+	size_t count_;
 	T * ptr_;
 	size_t size_;
 	std::unique_ptr<bitset> map_;
+
 };
 template <typename T>
 class stack {
