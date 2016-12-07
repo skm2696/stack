@@ -14,8 +14,7 @@ using std::ostream;
 class bitset
 {
 public:
-	explicit
-		bitset(size_t size) /*strong*/;
+	explicit bitset(size_t size) /*strong*/;
 
 	bitset(bitset const & other) = delete;
 	auto operator =(bitset const & other)->bitset & = delete;
@@ -34,6 +33,7 @@ private:
 	size_t size_;
 	size_t counter_;
 };
+
 
 template <typename T>
 class allocator{
@@ -61,26 +61,25 @@ private:
 	T * ptr_;
 	size_t size_;
 	std::unique_ptr<bitset> map_;
-
 };
+
 template <typename T>
 class stack {
 public:
 	explicit stack(size_t size = 0);
+	stack(stack const & other); /*strong*/
 	auto operator =(stack const & other) /*strong*/ -> stack &;
 
 	auto empty() const /*noexcept*/ -> bool;
 	auto count() const /*noexcept*/ -> size_t;
 
 	auto push(T const & value) /*strong*/ -> void;
-	auto pop() /*strong*/ -> void;
-	auto top() /*strong*/ -> T &;
-	auto top() const /*strong*/ -> T const &;
+	auto pop() /*strong*/ -> std::shared_ptr<T>;
 
 private:
-	allocator<T> allocator_;
+	allocator<T> allocate;
 	auto throw_is_empty()/*strong*/ const -> void;
-	std::mutex mutex_;
+	mutable std::mutex mutex_;
 };
 #include "Stack.cpp"
 
